@@ -17,7 +17,23 @@ jobs:
       - name: add missing packages
         uses: ConorMacBride/install-package@v1
         with:
-          apt: uthash-dev libyang2-dev libsysrepo-dev
+          apt: uthash-dev
+      - name: libyang v2.1.148 from upstream
+        uses: actions/checkout@v4
+        with:
+          repository: 'CESNET/libyang.git'
+          ref: 'v2.1.148'
+      - name: make libyang v2.1.148 from upstream
+        run : mkdir build && cd build && cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_BUILD_TYPE:String="Release" .. && make -j $(nproc) && make install
+      - name: sysrepo v2.2.150 from upstream
+        uses: actions/checkout@v4
+        with:
+          repository: 'sysrepo/sysrepo.git'
+          ref: 'v2.2.150'
+      - name: make sysrepo v2.2.150 from upstream
+        run : mkdir build && cd build && cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_BUILD_TYPE:String="Release" .. && make -j $(nproc) && make install
+      - name: check sysrepo running ok
+        run : sysrepoctl -l
       - name: checkout
         uses: actions/checkout@v4
       - name: make
